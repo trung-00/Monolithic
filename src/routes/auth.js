@@ -74,4 +74,26 @@ router.get('/me', authenticate, async (req, res) => {
     res.json(user);
 });
 
+router.patch('/password', authenticate, async (req, res) => {
+    const { currentPassword, newPassword } = req.body ?? {};
+
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
+        throw new HttpError(400, 'currentPassword and newPassword are required');
+    }
+    if (newPassword.length < 8 || newPassword.length > 72) {
+        throw new HttpError(400, 'newPassword must be 8-72 characters');
+    }
+
+    const user = await prisma.user.findUnique({ where: { uid: req.user.uid } });
+    if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+        throw new HttpError(401, 'Current password is incorrect');
+    }
+
+    await prisma.user.update({
+        where: { uid: user.uid },
+        data: { password: await bcrypt.hash(newPassword, env.saltRounds) },
+    });
+    res.status(204).end();
+});
+
 module.exports = router;
