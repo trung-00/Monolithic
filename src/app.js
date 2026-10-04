@@ -15,6 +15,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/memberships', require('./routes/memberships'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/shipments', require('./routes/shipments'));
+app.use('/api/users', require('./routes/users'));
 
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use(errorHandler);
