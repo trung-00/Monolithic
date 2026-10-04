@@ -10,12 +10,12 @@ async function main() {
         where: { rolename: 'ADMIN' }, update: {}, create: { rolename: 'ADMIN' },
     });
     await prisma.role.upsert({
-        where: { rolename: 'USER' }, update: {}, create: { rolename: 'USER' },
+        where: { rolename: 'normal' }, update: {}, create: { rolename: 'normal' },
     });
 
-    // Memberships
+    // Memberships (Bronze là hạng mặc định khi đăng ký, score 10)
     const tiers = [
-        { mname: 'Bronze', score: 0 },
+        { mname: 'Bronze', score: 10 },
         { mname: 'Silver', score: 100 },
         { mname: 'Gold', score: 500 },
     ];

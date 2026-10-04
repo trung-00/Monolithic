@@ -19,8 +19,9 @@ router.post('/register', async (req, res) => {
         throw new HttpError(400, 'password must be 8-72 characters');
     }
 
+    // Mặc định: role "normal", hạng Bronze (score 10)
     const [role, membership] = await Promise.all([
-        prisma.role.findUnique({ where: { rolename: 'USER' } }),
+        prisma.role.findUnique({ where: { rolename: 'normal' } }),
         prisma.membership.findUnique({ where: { mname: 'Bronze' } }),
     ]);
     if (!role || !membership) {
@@ -35,7 +36,13 @@ router.post('/register', async (req, res) => {
             roleid: role.roleid,
             mid: membership.mid,
         },
-        select: { uid: true, username: true, fullname: true },
+        select: {
+            uid: true,
+            username: true,
+            fullname: true,
+            role: true,
+            membership: true,
+        },
     });
 
     res.status(201).json(user);
